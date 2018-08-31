@@ -28,15 +28,16 @@ def main():
 def quebra():
 	hash=raw_input("Digite o Hash completo\n")
 	salt=raw_input("Digite o salt\n")
-	file=open('pass.txt','r')
+	file=open(sys.argv[1],'r')
 	wordlist = file.read().split('\n')
 	for line in wordlist:
 		crack=crypt.crypt(line, salt)
 		if (crack == hash):
 			print "[*]Password Found: "+line
+			sys.exit(0)
 		else:
 			print "[-]Trying.....",line
-		file.close()
-		sys.exit()
+	file.close()
+	sys.exit()
 
 main()
