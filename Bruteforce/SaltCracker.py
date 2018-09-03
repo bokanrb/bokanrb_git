@@ -6,16 +6,11 @@ import threading
 import subprocess
 
 def usage():
-	print "Usage()"
-	print "python fsaltbroker.py [wordlist]       "
+	print "Usage()................"
+	print "python SaltCracker.py  [wordlist path]     "
 	print "				              "
-	print "                                       "
 	print "Then you'll be prompted for HASH and SALT"
-        print "                                       "
-        print "                                       "
 	print "[!]This script is ONLY for hashes using SALT"
-	print " "
-	print " "
 	sys.exit()
 
 def main():
@@ -28,15 +23,16 @@ def main():
 def quebra():
 	hash=raw_input("Digite o Hash completo\n")
 	salt=raw_input("Digite o salt\n")
-	file=open('pass.txt','r')
+	file=open(sys.argv[1],'r')
 	wordlist = file.read().split('\n')
 	for line in wordlist:
 		crack=crypt.crypt(line, salt)
 		if (crack == hash):
 			print "[*]Password Found: "+line
+			break
 		else:
 			print "[-]Trying.....",line
-		file.close()
-		sys.exit()
+	file.close()
+	sys.exit()
 
 main()
